@@ -1,0 +1,52 @@
+% Presenting vim-panbeamer
+% Felipe Morales
+% 10-9-2011
+
+# pandoc + beamer = awesomeness!
+
+* markdown is easier to write than \LaTeX
+	
+	* ...but \LaTeX\ is there if you need it
+* pandoc is quite flexible, and suppports a lot of niceties (CSL among them,
+  making 'natbib' et al obsolete, IMO).
+* beamer is great for presentations.
+
+# **vim**  + pandoc + beamer = awesomeness$^{2}$
+
+* pandoc doesn't output beamer-ready \LaTeX\ so we need to prepare it before
+  producing a PDF.
+* This usually leads to writing a Makefile for every presentation we
+  make.[^see] Most of the time, all of them will be identical. 
+* We should take advantage of vim's compiler support, instead of doing that.
+  That is exactly what vim-panbeamer does.
+
+[^see]: See [this artitle on using pandoc for beamer presentations](http://goo.gl/nfX55).
+
+# Some examples (I)
+
+* Text in *italics* and **bold** styles are easy.
+* You have smart \"s: 'this' and "this".
+* Enumerations too:
+	1. One thing
+	2. Something else
+* Math is no trouble, inline, as $i\hbar\frac{\partial}{\partial t} \Psi = \hat H \Psi$ 
+or in its own environment:
+\begin{equation}
+$i\hbar\frac{\partial}{\partial t} \Psi(\mathbf{r},\,t) = \hat H \Psi = 
+\left(-\frac{\hbar^2}{2m}\nabla^2 + V(\mathbf{r})\right)\Psi(\mathbf{r},\,t) =
+-\frac{\hbar^2}{2m}\nabla^2\Psi(\mathbf{r},\,t) + V(\mathbf{r})\Psi(\mathbf{r},\,t)
+\end{equation}
+
+# Some examples (II)
+
+* You can have footonotes.^[This is the actual footnote.]
+* Quotes are simple:
+
+> Quotes are simple. [@FM11, p.5 *passim*]
+
+* As you see [-@FM11, p.5], citations are supported too. You can put them
+  in-text, as in @FM11 [p. 5].
+* Links are not really difficult. You can [google](http://www.google.com)
+  those!
+
+# References

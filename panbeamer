@@ -1,0 +1,82 @@
+#!/usr/bin/env python
+
+import sys
+from os import system, remove
+from os.path import dirname, join, splitext, exists
+from argparse import ArgumentParser
+import fileinput
+import glob
+
+def generate_latex(source, output, template, bibliography, csl):
+	tex_output = splitext(output)[0] + ".tex"
+	
+	args = []
+	args.append("pandoc")
+	args.append("-f markdown")
+	args.append("-i " + source)
+	args.append("-o " + tex_output)
+	args.append("--template=" + template)
+	if bibliography != None:
+		args.append("--bibliography=" + bibliography)
+		args.append("--csl=" + csl)
+	system(" ".join(args))
+
+	# fix for beamer
+	for line in fileinput.input(tex_output, inplace=1):
+		if "\section" in line:
+			sys.stdout.write(line.replace("\section", "\end{frame}\n\\begin{frame}"))
+		else:
+			sys.stdout.write(line)
+	
+	if exists(tex_output):
+		return tex_output
+	return None
+
+def generate_pdf(source):
+	if source:
+		system("pdflatex -interaction batchmode " + source)
+		return splitext(source)[0] + ".pdf"
+
+def cleanup(for_source):
+	source_root = splitext(for_source)[0]
+	files = glob.glob(source_root + ".*")
+	for file_to_preserve in [source_root + "." + ext for ext in ["pdf", "pbeam", "bib"]]:
+		try:
+			files.remove(file_to_preserve)
+		except:
+			pass
+	for item in files:
+		remove(item)
+
+if __name__ == "__main__":
+	templates_dir = join(dirname(sys.modules["__main__"].__file__), "templates")
+
+	oparser = ArgumentParser()
+	oparser.add_argument("-t", "--template",
+			default=join(templates_dir,"beamer.template"),
+			help="specify a template")
+	oparser.add_argument("-b","--bibliography",
+			help="specify a bibliography")
+	oparser.add_argument("-c","--csl",
+			default=join(templates_dir, "chicago-author-date.csl"),
+			help="specify a csl schema")
+	oparser.add_argument("-o", "--output",
+			help="specify an output file")
+	oparser.add_argument("file",
+			help="specify a file to compile")
+	values = oparser.parse_args(sys.argv[1:])
+
+	source = values.file
+	output = values.output
+	template = values.template
+	if values.bibliography != None:
+		bibliography = values.bibliography
+	else:
+		if exists(splitext(source)[0]+".bib"):
+			bibliography = splitext(source)[0] + ".bib"
+		else:
+			bibliography = None
+	csl = values.csl
+
+	generate_pdf(generate_latex(source, output, template, bibliography, csl))
+	cleanup(source)

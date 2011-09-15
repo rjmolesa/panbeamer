@@ -1,0 +1,90 @@
+\pdfminorversion=4 % impressive! won't load pdfs of higher versions
+$if(legacy-header)$
+$legacy-header$
+$else$
+\documentclass{beamer}
+\hypersetup{colorlinks=true,linkcolor=white} % You might need to change the colors depending on your colortheme
+\usetheme{Malmoe}
+\usefonttheme[onlymath]{serif}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{gn-logic14}
+\usepackage{turnstile}
+\usepackage{qtree}
+\newcommand{\POS}{\Diamond}
+\newcommand{\NEC}{\Box}
+\newcommand{\Proves}{\sststile{}{}}
+\newcommand{\MakesTrue}{\sdtstile{}{}}
+$if(xetex)$
+\usepackage{ifxetex}
+\ifxetex
+  \usepackage{fontspec,xltxtra,xunicode}
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+\else
+  \usepackage[mathletters]{ucs}
+  \usepackage[utf8x]{inputenc}
+\fi
+$else$
+\usepackage[mathletters]{ucs}
+\usepackage[utf8x]{inputenc}
+$endif$
+$if(lhs)$
+\usepackage{listings}
+\lstnewenvironment{code}{\lstset{language=Haskell,basicstyle=\small\ttfamily}}{}
+$endif$
+$endif$
+$if(verbatim-in-note)$
+\usepackage{fancyvrb}
+$endif$
+$if(fancy-enums)$
+\usepackage{enumerate}
+$endif$
+$if(tables)$
+\usepackage{array}
+% This is needed because raggedright in table elements redefines \\:
+\newcommand{\PreserveBackslash}[1]{\let\temp=\\#1\let\\=\temp}
+\let\PBS=\PreserveBackslash
+$endif$
+$if(strikeout)$
+\usepackage[normalem]{ulem}
+$endif$
+$if(subscript)$
+\newcommand{\textsubscr}[1]{\ensuremath{_{\scriptsize\textrm{#1}}}}
+$endif$
+$if(url)$
+\usepackage{url}
+$endif$
+$if(graphics)$
+\usepackage{graphicx}
+$endif$
+$if(numbersections)$
+$else$
+$endif$
+$if(verbatim-in-note)$
+\VerbatimFootnotes % allows verbatim text in footnotes
+$endif$
+$for(header-includes)$
+$header-includes$
+$endfor$
+
+$if(title)$
+\title{$title$}
+$endif$
+\author{$for(author)$$author$$sep$\\$endfor$}
+$if(date)$
+\date{$date$}
+$endif$
+% remove navigation bar
+\setbeamertemplate{navigation symbols}{}
+% transparent overlays
+\setbeamercovered{transparent}
+
+\begin{document}
+$if(title)$
+\begin{frame}{}
+  \titlepage
+$endif$
+
+$body$
+\end{frame}
+\end{document}
